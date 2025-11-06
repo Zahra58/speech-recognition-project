@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Speech Recognition - Real-time Captions</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            backdrop-filter: blur(10px);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: bold;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .status-bar {
+            background: linear-gradient(90deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.2em;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .status-bar.recording {
+            background: linear-gradient(90deg, #f093fb, #f5576c);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        #startBtn {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        #startBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        #stopBtn {
+            background: linear-gradient(135deg, #f093fb, #f5576c);
+            color: white;
+        }
+
+        #stopBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 87, 108, 0.4);
+        }
+
+        #clearBtn {
+            background: linear-gradient(135deg, #a8edea, #fed6e3);
+            color: #333;
+        }
+
+        #clearBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(168, 237, 234, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .language-selector {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .language-selector select {
+            padding: 10px 20px;
+            font-size: 1em;
+            border: 2px solid #667eea;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .caption-box {
+            background: #f8f9fa;
+            border: 3px solid #667eea;
+            border-radius: 15px;
+            padding: 30px;
+            min-height: 200px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.05);
+        }
+
+        .caption-text {
+            font-size: 1.4em;
+            line-height: 1.8;
+            color: #2d3748;
+            word-wrap: break-word;
+        }
+
+        .caption-text.interim {
+            color: #999;
+            font-style: italic;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-value {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+
+        .info-box h3 {
+            color: #1976D2;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+            color: #666;
+        }
+
+        .info-box li {
+            margin: 5px 0;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 20px;
+            color: white;
+            font-size: 0.9em;
+        }
+
+        .footer a {
+            color: white;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2em;
+            }
+            
+            .container {
+                padding: 20px;
+            }
+            
+            .controls {
+                flex-direction: column;
+            }
+            
+            button {
+                width: 100%;
+            }
+        }
+
+        .visualizer {
+            height: 100px;
+            background: #1a1a2e;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .visualizer canvas {
+            width: 100%;
+            height: 100%;
+        }
+
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎤 Live Speech Recognition</h1>
+        <p class="subtitle">Real-time speech-to-text captions powered by Web Speech API</p>
+
+        <div class="warning" id="browserWarning" style="display: none;">
+            ⚠️ This app works best in Google Chrome, Microsoft Edge, or Safari on desktop.
+        </div>
+
+        <div class="status-bar" id="statusBar">
+            Ready to start - Click "Start Recognition" below
+        </div>
+
+        <div class="language-selector">
+            <label for="languageSelect"><strong>Language:</strong></label>
+            <select id="languageSelect">
+                <option value="en-US">English (US)</option>
+                <option value="en-GB">English (UK)</option>
+                <option value="es-ES">Spanish</option>
+                <option value="fr-FR">French</option>
+                <option value="de-DE">German</option>
+                <option value="it-IT">Italian</option>
+                <option value="pt-BR">Portuguese (Brazil)</option>
+                <option value="ja-JP">Japanese</option>
+                <option value="zh-CN">Chinese (Mandarin)</option>
+                <option value="hi-IN">Hindi</option>
+                <option value="ar-SA">Arabic</option>
+                <option value="ru-RU">Russian</option>
+            </select>
+        </div>
+
+        <div class="controls">
+            <button id="startBtn">🎙️ Start Recognition</button>
+            <button id="stopBtn" disabled>⏹️ Stop</button>
+            <button id="clearBtn">🗑️ Clear Text</button>
+        </div>
+
+        <div class="visualizer" id="visualizer">
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <div class="caption-box" id="captionBox">
+            <div class="caption-text" id="captionText">
+                Your live captions will appear here...
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-value" id="wordCount">0</div>
+                <div class="stat-label">Words</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="charCount">0</div>
+                <div class="stat-label">Characters</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="duration">0:00</div>
+                <div class="stat-label">Duration</div>
+            </div>
+        </div>
+
+        <div class="info-box">
+            <h3>📋 How to Use:</h3>
+            <ul>
+                <li>Click "Start Recognition" and allow microphone access</li>
+                <li>Start speaking clearly into your microphone</li>
+                <li>Watch your words appear in real-time!</li>
+                <li>Select different languages from the dropdown</li>
+                <li>Click "Stop" when you're done</li>
+            </ul>
+        </div>
+
+        <div class="info-box">
+            <h3>💡 Tips for Best Results:</h3>
+            <ul>
+                <li>Use Google Chrome or Microsoft Edge for best compatibility</li>
+                <li>Speak clearly and at a moderate pace</li>
+                <li>Use a good quality microphone</li>
+                <li>Minimize background noise</li>
+                <li>Grant microphone permissions when prompted</li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="footer">
+        Built with ❤️ using Web Speech API | <a href="https://github.com" target="_blank">View on GitHub</a>
+    </div>
+
+    <script>
+        // Check browser support
+        if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+            document.getElementById('browserWarning').style.display = 'block';
+            document.getElementById('startBtn').disabled = true;
+        }
+
+        // Initialize Speech Recognition
+        const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        const recognition = new SpeechRecognition();
+
+        recognition.continuous = true;
+        recognition.interimResults = true;
+        recognition.maxAlternatives = 1;
+
+        // Elements
+        const startBtn = document.getElementById('startBtn');
+        const stopBtn = document.getElementById('stopBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const statusBar = document.getElementById('statusBar');
+        const captionText = document.getElementById('captionText');
+        const languageSelect = document.getElementById('languageSelect');
+        const wordCountEl = document.getElementById('wordCount');
+        const charCountEl = document.getElementById('charCount');
+        const durationEl = document.getElementById('duration');
+
+        let finalTranscript = '';
+        let startTime = null;
+        let durationInterval = null;
+
+        // Set language
+        recognition.lang = languageSelect.value;
+        languageSelect.addEventListener('change', (e) => {
+            recognition.lang = e.target.value;
+        });
+
+        // Audio Visualizer
+        let audioContext;
+        let analyser;
+        let microphone;
+        let canvas = document.getElementById('canvas');
+        let canvasContext = canvas.getContext('2d');
+
+        function setupVisualizer() {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+            analyser = audioContext.createAnalyser();
+            analyser.fftSize = 256;
+
+            navigator.mediaDevices.getUserMedia({ audio: true })
+                .then(stream => {
+                    microphone = audioContext.createMediaStreamSource(stream);
+                    microphone.connect(analyser);
+                    visualize();
+                })
+                .catch(err => console.log('Microphone access denied:', err));
+        }
+
+        function visualize() {
+            const bufferLength = analyser.frequencyBinCount;
+            const dataArray = new Uint8Array(bufferLength);
+
+            canvas.width = canvas.offsetWidth;
+            canvas.height = canvas.offsetHeight;
+
+            function draw() {
+                requestAnimationFrame(draw);
+
+                analyser.getByteFrequencyData(dataArray);
+
+                canvasContext.fillStyle = '#1a1a2e';
+                canvasContext.fillRect(0, 0, canvas.width, canvas.height);
+
+                const barWidth = (canvas.width / bufferLength) * 2.5;
+                let barHeight;
+                let x = 0;
+
+                for (let i = 0; i < bufferLength; i++) {
+                    barHeight = (dataArray[i] / 255) * canvas.height * 0.8;
+
+                    const gradient = canvasContext.createLinearGradient(0, canvas.height - barHeight, 0, canvas.height);
+                    gradient.addColorStop(0, '#667eea');
+                    gradient.addColorStop(1, '#764ba2');
+
+                    canvasContext.fillStyle = gradient;
+                    canvasContext.fillRect(x, canvas.height - barHeight, barWidth, barHeight);
+
+                    x += barWidth + 1;
+                }
+            }
+
+            draw();
+        }
+
+        // Start Recognition
+        startBtn.addEventListener('click', () => {
+            recognition.start();
+            startBtn.disabled = true;
+            stopBtn.disabled = false;
+            statusBar.textContent = '🔴 LISTENING... Speak now!';
+            statusBar.classList.add('recording');
+            
+            startTime = Date.now();
+            durationInterval = setInterval(updateDuration, 1000);
+            
+            setupVisualizer();
+        });
+
+        // Stop Recognition
+        stopBtn.addEventListener('click', () => {
+            recognition.stop();
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            statusBar.textContent = '⏸️ Stopped';
+            statusBar.classList.remove('recording');
+            
+            clearInterval(durationInterval);
+            
+            if (audioContext) {
+                audioContext.close();
+            }
+        });
+
+        // Clear Text
+        clearBtn.addEventListener('click', () => {
+            finalTranscript = '';
+            captionText.textContent = 'Your live captions will appear here...';
+            updateStats();
+        });
+
+        // Recognition Results
+        recognition.onresult = (event) => {
+            let interimTranscript = '';
+
+            for (let i = event.resultIndex; i < event.results.length; i++) {
+                const transcript = event.results[i][0].transcript;
+                if (event.results[i].isFinal) {
+                    finalTranscript += transcript + ' ';
+                } else {
+                    interimTranscript += transcript;
+                }
+            }
+
+            captionText.innerHTML = finalTranscript + 
+                '<span class="interim">' + interimTranscript + '</span>';
+            
+            captionText.parentElement.scrollTop = captionText.parentElement.scrollHeight;
+            updateStats();
+        };
+
+        // Error Handling
+        recognition.onerror = (event) => {
+            console.error('Speech recognition error:', event.error);
+            statusBar.textContent = '❌ Error: ' + event.error;
+            statusBar.classList.remove('recording');
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+        };
+
+        recognition.onend = () => {
+            startBtn.disabled = false;
+            stopBtn.disabled = true;
+            statusBar.classList.remove('recording');
+            if (statusBar.textContent.includes('LISTENING')) {
+                statusBar.textContent = '✅ Recognition complete';
+            }
+        };
+
+        // Update Statistics
+        function updateStats() {
+            const words = finalTranscript.trim().split(/\s+/).filter(w => w.length > 0);
+            wordCountEl.textContent = words.length;
+            charCountEl.textContent = finalTranscript.length;
+        }
+
+        function updateDuration() {
+            if (startTime) {
+                const elapsed = Math.floor((Date.now() - startTime) / 1000);
+                const minutes = Math.floor(elapsed / 60);
+                const seconds = elapsed % 60;
+                durationEl.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            }
+        }
+    </script>
+</body>
+</html>
