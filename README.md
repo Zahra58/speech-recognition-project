@@ -41,4 +41,109 @@ It combines **audio feature extraction (MFCCs)** with a **Deep Learning model (L
 
 ---
 
+#  Live Speech Recognition Project
+
+**Developer:** Zahra Etebari  
+**Tech Stack:** Python, Web Speech API, Google Colab, JavaScript, HTML/CSS  
+
+---
+
+##  Overview
+
+This project implements a **real-time speech-to-text system** capable of transcribing spoken language directly into written text through the browser. It combines **AI-powered audio processing** and **frontend deployment** for a seamless live captioning experience.
+
+Built from the ground up — from model training to frontend deployment — this project demonstrates the end-to-end development of a modern speech recognition pipeline.
+
+---
+
+##  Features
+
+-  **Real-Time Recognition:** Converts speech to text instantly using the Web Speech API.  
+-  **Custom Model Training:** Trained and fine-tuned on open datasets (LibriSpeech).  
+-  **Live Captions Display:** Dynamic caption box with real-time updates.  
+-  **Data Pipeline:** Includes preprocessing, augmentation, and evaluation scripts.  
+-  **Deployed Interface:** Interactive HTML app with language selector and live results.  
+
+---
+
+##  Tech Stack
+
+| Layer | Tools / Libraries |
+|-------|-------------------|
+| Model Training | Python, NumPy, Librosa, Pandas, TensorFlow |
+| Preprocessing | ffmpeg, pydub, concurrent.futures |
+| Live Interface | JavaScript, HTML5, CSS, Web Speech API |
+| Environment | Google Colab, GitHub Pages |
+
+---
+
+##  How It Works
+
+1. **Preprocessing:** Audio files are normalized, converted to 16-bit PCM WAV format, and cleaned for training.  
+2. **Model Training:** The dataset is fed into an RNN/Transformer model for speech-to-text prediction.  
+3. **Frontend Integration:** The trained model’s API connects to a web interface using the Web Speech API for real-time recognition.  
+4. **Deployment:** Hosted on GitHub Pages for interactive live testing.
+
+---
+
 ##  Repository Structure
+speech-recognition-project/
+├── data/ # Training and test datasets
+├── models/ # Saved models and checkpoints
+├── results/ # Evaluation metrics and outputs
+├── images/ # Screenshots and visual assets
+├── index.html # Live recognition app
+├── README.md # Project documentation
+└── LICENSE
+
+---
+
+---
+
+##  Results
+
+- Achieved high accuracy on clean speech samples.  
+- Successfully deployed real-time live transcription in browser.  
+- Demonstrated robust handling of accents and background noise.  
+
+---
+
+##  Future Improvements
+
+- Add multilingual model support.  
+- Deploy backend API for advanced custom models.  
+- Integrate Whisper / DeepSpeech fine-tuning for improved robustness.  
+- Build mobile version for Android/iOS.
+
+---
+
+##  Acknowledgments
+
+Special thanks to open-source communities supporting **LibriSpeech**, **TensorFlow**, and **Web Speech API** development.  
+
+---
+
+ *Built with passion and curiosity by Zahra Etebari*  
+ *Turning AI research into real-world applications.*
+
+
+ ---
+![Visitors](https://visitor-badge.laobi.icu/badge?page_id=zahraete.speech-recognition-project)
+
+
+ ---
+
+## 📣 Project Showcase
+
+💬 I shared this project on [LinkedIn](https://www.linkedin.com/in/<your-linkedin-handle>/) to document my journey and connect with other AI developers!  
+If you tried this repo, learned something, or built upon it, feel free to star ⭐ the project or reach out.  
+
+**👉 [See the full post on LinkedIn](https://www.linkedin.com/in/<your-linkedin-handle>/)**  
+
+---
+ ## How to use it live
+ just click on this link and enjoy live demo, do not forget to give me 1 star.
+
+ https://zahra58.github.io/speech-recognition-project/index.html/
+
+
