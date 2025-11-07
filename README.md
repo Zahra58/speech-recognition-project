@@ -76,6 +76,17 @@ Built from the ground up — from model training to frontend deployment — this
 | Environment | Google Colab, GitHub Pages |
 
 ---
+## Technologies Used
+
+| Category | Tools & Frameworks |
+|-----------|--------------------|
+|  Programming | Python , JavaScript  |
+|  Machine Learning | TensorFlow, Keras, Scikit-learn |
+|  Speech Processing | Librosa, PyDub, SpeechRecognition |
+|  Frontend | HTML5, CSS3, Bootstrap |
+|  Deployment | GitHub Pages, Google Colab |
+|  APIs | Web Speech API, Flask (for backend integration) |
+
 
 ##  How It Works
 
@@ -128,7 +139,19 @@ Special thanks to open-source communities supporting **LibriSpeech**, **TensorFl
 
 
  ---
+
+ ##  Project Stats Dashboard
+
 ![Visitors](https://visitor-badge.laobi.icu/badge?page_id=zahraete.speech-recognition-project)
+![GitHub stars](https://img.shields.io/github/stars/Zahra58/speech-recognition-project?style=social)
+![GitHub forks](https://img.shields.io/github/forks/Zahra58/speech-recognition-project?style=social)
+![Repo size](https://img.shields.io/github/repo-size/Zahra58/speech-recognition-project?color=blueviolet)
+![License](https://img.shields.io/github/license/Zahra58/speech-recognition-project?color=brightgreen)
+![Last commit](https://img.shields.io/github/last-commit/Zahra58/speech-recognition-project?color=yellow)
+
+> 💡 *This dashboard updates automatically every time someone visits, stars, or forks the repo!*
+
+
 
 
  ---
@@ -146,4 +169,15 @@ If you tried this repo, learned something, or built upon it, feel free to star �
 
  https://zahra58.github.io/speech-recognition-project/index.html/
 
+---
+##  Contributors
+
+| Name | Role | About |
+|------|------|--------|
+| **Zahra Etebari** | Developer / Researcher | Passionate about turning AI research into real-world voice applications. |
+
+---
+![Built with Python](https://img.shields.io/badge/Built%20with-Python-blue?style=for-the-badge&logo=python)
+![Deployed on GitHub Pages](https://img.shields.io/badge/Deployed%20on-GitHub%20Pages-blueviolet?style=for-the-badge&logo=github)
+![AI Project](https://img.shields.io/badge/AI%20Project-Speech%20Recognition-ff69b4?style=for-the-badge&logo=brain)
 
