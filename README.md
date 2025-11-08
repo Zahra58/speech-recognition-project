@@ -149,14 +149,14 @@ Special thanks to open-source communities supporting **LibriSpeech**, **TensorFl
 ![License](https://img.shields.io/github/license/Zahra58/speech-recognition-project?color=brightgreen)
 ![Last commit](https://img.shields.io/github/last-commit/Zahra58/speech-recognition-project?color=yellow)
 
-> 💡 *This dashboard updates automatically every time someone visits, stars, or forks the repo!*
+> 
 
 
 
 
  ---
 
-## 📣 Project Showcase
+##  Project Showcase
 
 💬 I shared this project on [LinkedIn](https://www.linkedin.com/in/<your-linkedin-handle>/) to document my journey and connect with other AI developers!  
 If you tried this repo, learned something, or built upon it, feel free to star ⭐ the project or reach out.  
